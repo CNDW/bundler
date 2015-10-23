@@ -19,12 +19,14 @@
   "dependencies": {
     "babelify": "^6.4.0",
     "browserify": "^11.2.0",
+    "globby": "^3.0.1",
     "gulp": "^3.9.0",
     "gulp-if": "^2.0.0",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^1.4.2",
     "gulp-util": "^3.0.7",
     "lodash": "^3.10.1",
+    "through2": "^2.0.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.4.0"

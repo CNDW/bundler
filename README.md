@@ -1,6 +1,8 @@
 # Gulp-Bundler
-An unofficial gulp plugin for using Browserify, Bable, and Gulp.
 ==============
+An unofficial gulp plugin for using Browserify, Bable, and Gulp.
+
+Very early alpha, expect major changes to make the plugin better align with the gulp philosophy
 
 ## Installation
 
@@ -12,19 +14,23 @@ An unofficial gulp plugin for using Browserify, Bable, and Gulp.
 var gulp = require('gulp');
 var bundler = require('gulp-bundler');
 
-gulp.task('build', bundler({
-  bundleName: 'myBundle.js',
-  src: './scripts/index.js',
-  dest: './dist',
-  buildDir: './build'
-}));
+gulp.task('build', function(){
+  return bundler({
+    bundleName: 'myBundle.js',
+    src: './scripts/index.js',
+    dest: './dist',
+    buildDir: './build'
+  });
+});
 
-gulp.task('build:watch', bundler({
-  bundleName: 'myBundle.js',
-  src: './scripts/index.js',
-  dest: './dist',
-  buildDir: './build'
-}), true);
+gulp.task('build:watch', function(){
+  return bundler({
+    bundleName: 'myBundle.js',
+    src: './scripts/index.js',
+    dest: './dist',
+    buildDir: './build'
+  }, true);
+)};
 ```
 ### bundler(config{obj}, watch{bool})
 
