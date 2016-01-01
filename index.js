@@ -4,38 +4,28 @@ var gulpif = require('gulp-if');
 var rename = require('gulp-rename');
 var browserify = require('browserify');
 var watchify = require('watchify');
-var babelify = require('babelify');
 var uglify = require('gulp-uglify');
+var config = require('../config');
 var _ = require('lodash');
-var globby = require('globby');
 
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 
-var DEBUG = gutil.env.debug || process.env.NODE_ENV === 'debug';
-
 module.exports = function(buildConfig, watch){
-  var dest = buildConfig.dest || './dist';
+  var dest = buildConfig.dest || config.scripts.dest;
   var buildDir = buildConfig.buildDir || './scripts/build';
-  var bundleEntries = buildConfig.bundleEntries || buildConfig.src;
-
-  if (_.isString(bundleEntries)) bundleEntries = [bundleEntries];
-
-  var entries = globby.sync(bundleEntries);
   var bundleOptions = _.extend({
-    entries: entries,
+    entries: buildConfig.src,
     insertGlobals: true,
-    debug: DEBUG
+    debug: config.debug,
+    paths: ['./scripts']
   }, watchify.args, (buildConfig.bundleOptions || {}));
   // set up the browserify instance on a task basis
   var b = browserify(bundleOptions);
 
   // apply the transforms here to fix problem with babelify recursively
   //  calling itself and multiplying build times
-  b.transform(babelify.configure({
-    ignore: /(node_modules)|(vendor)|(static)|(build)/,
-    sourceMaps: 'inline'
-  }));
+  b.transform('babelify');
 
   // wrap browserify in watchify for faster builds
   if (watch) {
@@ -48,16 +38,17 @@ module.exports = function(buildConfig, watch){
     });
   }
 
-  function bundle(){
+  function bundle() {
     return b.bundle()
+      // log errors if they happen
       .on('error', gutil.log.bind(gutil, 'Browserify Error'))
       .pipe(source(buildConfig.src))
       .pipe(buffer())
       .pipe(rename(buildConfig.bundleName))
       .pipe(gulp.dest(buildDir))
-      .pipe(gulpif(!DEBUG, uglify()))
+      .pipe(gulpif(!config.debug, uglify()))
       .pipe(gulp.dest(dest));
   }
 
-  return bundle();
+  return bundle;
 }
