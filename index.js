@@ -10,7 +10,7 @@ var _ = require('lodash');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 
-var debug = util.env.debug || process.env.NODE_ENV === 'debug'
+var debug = gutil.env.debug || process.env.NODE_ENV === 'debug'
 
 module.exports = function(buildConfig, watch){
   var dest = buildConfig.dest || './dist';
