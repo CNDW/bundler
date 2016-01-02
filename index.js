@@ -5,19 +5,20 @@ var rename = require('gulp-rename');
 var browserify = require('browserify');
 var watchify = require('watchify');
 var uglify = require('gulp-uglify');
-var config = require('../config');
 var _ = require('lodash');
 
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 
+var debug = util.env.debug || process.env.NODE_ENV === 'debug'
+
 module.exports = function(buildConfig, watch){
-  var dest = buildConfig.dest || config.scripts.dest;
+  var dest = buildConfig.dest || './dist';
   var buildDir = buildConfig.buildDir || './scripts/build';
   var bundleOptions = _.extend({
     entries: buildConfig.src,
     insertGlobals: true,
-    debug: config.debug,
+    debug: debug,
     paths: ['./scripts']
   }, watchify.args, (buildConfig.bundleOptions || {}));
   // set up the browserify instance on a task basis
@@ -46,7 +47,7 @@ module.exports = function(buildConfig, watch){
       .pipe(buffer())
       .pipe(rename(buildConfig.bundleName))
       .pipe(gulp.dest(buildDir))
-      .pipe(gulpif(!config.debug, uglify()))
+      .pipe(gulpif(!debug, uglify()))
       .pipe(gulp.dest(dest));
   }
 
