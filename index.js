@@ -6,6 +6,7 @@ var browserify = require('browserify');
 var watchify = require('watchify');
 var uglify = require('gulp-uglify');
 var _ = require('lodash');
+var globby = require('globby');
 
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
@@ -15,11 +16,15 @@ var debug = gutil.env.debug || process.env.NODE_ENV === 'debug'
 module.exports = function(buildConfig, watch){
   var dest = buildConfig.dest || './dist';
   var buildDir = buildConfig.buildDir || './scripts/build';
+
+  var bundleEntries = buildConfig.bundleEntries || buildConfig.src;
+  if (_.isString(bundleEntries)) bundleEntries = [bundleEntries];
+  var entries = globby.sync(bundleEntries);
+
   var bundleOptions = _.extend({
-    entries: buildConfig.src,
+    entries: entries,
     insertGlobals: true,
     debug: debug,
-    paths: ['./scripts']
   }, watchify.args, (buildConfig.bundleOptions || {}));
   // set up the browserify instance on a task basis
   var b = browserify(bundleOptions);
