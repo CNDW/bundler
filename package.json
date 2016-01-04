@@ -1,6 +1,6 @@
 {
   "name": "gulp-bundler",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "description": "Utility for using browserify with gulp",
   "main": "index.js",
   "scripts": {
